@@ -1,17 +1,22 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState } from "react";
 export default function Page(){
-const [ok,setOk]=useState(false);
-const [scan,setScan]=useState(false);
-const v=useRef<HTMLVideoElement>(null);
-const start=async()=>{
-setScan(true);
-try{
-const s=await navigator.mediaDevices.getUserMedia({video:true});
-if(v.current){v.current.srcObject=s; v.current.play();}
-setTimeout(()=>{setOk(true); setScan(false); s.getTracks().forEach(x=>x.stop())},2000);
-}catch{alert("Camera allow karo"); setScan(false);}
-};
-if(ok) return <div style={{minHeight:"100vh",background:"#0a0a0a",color:"#fff",padding:24}}><h1 style={{fontSize:28,fontWeight:900}}>NECKO FLOW Unlocked ✨</h1><p style={{marginTop:10,color:"#888"}}>Welcome to your studio</p><button onClick={()=>setOk(false)} style={{marginTop:20,padding:"10px 18px",borderRadius:10,background:"#222",color:"#fff",border:"none"}}>Lock Again 🔒</button></div>;
-return <div style={{minHeight:"100vh",background:"#000",color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column"}}><h1 style={{fontSize:34,fontWeight:900}}>NECKO FLOW</h1><p style={{color:"#666",fontSize:12,marginBottom:24,letterSpacing:4}}>FACE LOCK</p><div style={{width:260,height:260,borderRadius:28,background:"#111",border:"2px solid #333",overflow:"hidden",position:"relative",display:"flex",alignItems:"center",justifyContent:"center"}}><video ref={v} autoPlay muted playsInline style={{width:"100%",height:"100%",objectFit:"cover",transform:"scaleX(-1)",position:"absolute"}}/><span style={{fontSize:60,zIndex:1}}>🔒</span></div><button onClick={start} style={{marginTop:28,background:"#fff",color:"#000",padding:"14px 32px",borderRadius:99,fontWeight:800,border:"none"}}>{scan?"Scanning...":"Unlock with Face"}</button></div>;
-}
+const [prompt,setPrompt]=useState("");
+const [loading,setLoading]=useState(false);
+const [done,setDone]=useState(false);
+const gen=()=>{ if(!prompt) return alert("Prompt likho!"); setLoading(true); setTimeout(()=>{setLoading(false); setDone(true)},2500); };
+return(
+<div style={{minHeight:"100vh",background:"#070708",color:"#fff",fontFamily:"system-ui",padding:20}}>
+<div style={{maxWidth:800,margin:"0 auto"}}>
+<h1 style={{fontWeight:900,letterSpacing:2}}>NECK<span style={{color:"#a855f7"}}>O</span>Z</h1>
+<div style={{textAlign:"center",marginTop:50}}>
+<h2 style={{fontSize:42,fontWeight:900}}>Text se AI Video banao</h2>
+<div style={{background:"#111",border:"1px solid #222",borderRadius:20,padding:14,display:"flex",gap:10,maxWidth:600,margin:"30px auto"}}>
+<input value={prompt} onChange={e=>setPrompt(e.target.value)} placeholder="Jaise: Delhi girl dancing..." style={{flex:1,background:"#000",border:"1px solid #222",borderRadius:10,padding:12,color:"#fff"}}/>
+<button onClick={gen} style={{background:"#fff",color:"#000",borderRadius:10,padding:"12px 18px",fontWeight:800,border:"none"}}>{loading?"Bana raha...":"Generate"}</button>
+</div>
+{done && <div style={{background:"#111",borderRadius:16,padding:16,border:"1px solid #333"}}>Video Ready: "{prompt}" 🎬<br/><br/><button style={{background:"#a855f7",color:"#fff",padding:"8px 16px",borderRadius:99,border:"none"}}>Download</button></div>}
+</div>
+</div>
+</div>
+)}
